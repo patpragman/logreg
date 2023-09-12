@@ -9,7 +9,7 @@ import os
 import pickle
 from cm_handler import display_and_save_cm
 from pprint import pformat
-
+from pathlib import Path
 # start up wandb!
 
 wandb.init(
@@ -27,7 +27,7 @@ with open(results_filename, "w") as results_file:
     results_file.write("# Results for Logistic Regression:\n")
 
 
-folder_paths = [f"/home/patrickpragman/tx_data/data_{size}" for size in sizes]
+folder_paths = [f"{Path.home()}/tx_data/data_{size}" for size in sizes]
 for size, dataset_path in zip(sizes, folder_paths):
     wandb.log({"msg": f"Logistic Regression Model for {size} x {size} images"})
 
@@ -35,7 +35,7 @@ for size, dataset_path in zip(sizes, folder_paths):
     data = []
     Y = []
 
-    classifier = LogisticRegression(class_weight='balanced')
+    classifier = LogisticRegression(class_weight='balanced', max_iter=3000)
     classes = os.listdir(dataset_path)
 
     if ".DS_Store" in classes:
