@@ -10,6 +10,7 @@ import pickle
 from cm_handler import display_and_save_cm
 from pprint import pformat
 from pathlib import Path
+
 # start up wandb!
 
 wandb.init(
@@ -25,7 +26,6 @@ if os.path.isfile(results_filename):
 
 with open(results_filename, "w") as results_file:
     results_file.write("# Results for Logistic Regression:\n")
-
 
 folder_paths = [f"{Path.home()}/tx_data/data_{size}" for size in sizes]
 for size, dataset_path in zip(sizes, folder_paths):
@@ -99,5 +99,8 @@ for size, dataset_path in zip(sizes, folder_paths):
         wandb.log(d)
 
     with open(results_filename, "a") as outfile:
-        outfile.write(pformat(cr))
-
+        outfile.write(f"{size}x{size} images\n")
+        outfile.write(classification_report(
+            y_test, y_pred, target_names=[key for key in mapping.keys()], output_dict=True
+        ))
+        outfile.write("\n")
