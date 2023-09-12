@@ -101,6 +101,6 @@ for size, dataset_path in zip(sizes, folder_paths):
     with open(results_filename, "a") as outfile:
         outfile.write(f"{size}x{size} images\n")
         outfile.write(classification_report(
-            y_test, y_pred, target_names=[key for key in mapping.keys()], output_dict=True
+            y_test, y_pred, target_names=[key for key in mapping.keys()]
         ))
         outfile.write("\n")
