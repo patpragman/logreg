@@ -98,6 +98,6 @@ for size, dataset_path in zip(sizes, folder_paths):
     for d in [cr[k] for k in mapping.keys()]:
         wandb.log(d)
 
-    with open(results_filename, "w") as outfile:
+    with open(results_filename, "a") as outfile:
         outfile.write(pformat(cr))
 
