@@ -8,6 +8,7 @@ from skimage import color, io
 import os
 import pickle
 from cm_handler import display_and_save_cm
+from pprint import pformat
 
 # start up wandb!
 
@@ -17,6 +18,14 @@ wandb.init(
 
 sizes = [1024, 512, 256, 224, 128, 64]
 sizes.reverse()  # start with the smaller problem
+
+results_filename = 'results.md'
+if os.path.isfile(results_filename):
+    os.remove(results_filename)  # delete the old one, make a new one!
+
+with open(results_filename, "w") as results_file:
+    results_file.write("# Results for Logistic Regression:\n")
+
 
 folder_paths = [f"/home/patrickpragman/tx_data/data_{size}" for size in sizes]
 for size, dataset_path in zip(sizes, folder_paths):
@@ -88,4 +97,7 @@ for size, dataset_path in zip(sizes, folder_paths):
 
     for d in [cr[k] for k in mapping.keys()]:
         wandb.log(d)
+
+    with open(results_filename, "w") as outfile:
+        outfile.write(pformat(cr))
 
