@@ -16,10 +16,10 @@ wandb.init(
     project="Elodea LogReg", notes="trying to build the classifier with logistic regression, testing all the images",
 )
 
-sizes = [1024, 512, 256, 224, 128, 64]
-sizes.reverse()  # start with the smaller problem
+sizes = [512, 256, 224, 128, 64]
+#sizes.reverse()  # start with the smaller problem
 
-results_filename = 'results.md'
+results_filename = 'log_reg_results.md'
 if os.path.isfile(results_filename):
     os.remove(results_filename)  # delete the old one, make a new one!
 
@@ -27,7 +27,7 @@ with open(results_filename, "w") as results_file:
     results_file.write("# Results for Logistic Regression:\n")
 
 
-folder_paths = [f"{Path.home()}/tx_data/data_{size}" for size in sizes]
+folder_paths = [f"/home/patrickpragman/PycharmProjects/models/data_manufacturer/0.35_reduced_then_balanced/data_{size}" for size in sizes]
 for size, dataset_path in zip(sizes, folder_paths):
     wandb.log({"msg": f"Logistic Regression Model for {size} x {size} images"})
 
@@ -38,13 +38,9 @@ for size, dataset_path in zip(sizes, folder_paths):
     classifier = LogisticRegression(class_weight='balanced', max_iter=3000)
     classes = os.listdir(dataset_path)
 
-    if ".DS_Store" in classes:
-        # for macs
-        classes.remove(".DS_Store")
-
-    for klass in classes:
-        if ".pkl" in klass:
-            classes.remove(klass)
+    excluded = ["pkl", ".DS_Store", "md", "png"]
+    classes = [str(klass).split("/")[-1] for klass in Path(dataset_path).iterdir()
+               if klass.is_dir()]
 
     # create a mapping from the classes to each number class and demapping
     mapping = {n: i for i, n in enumerate(classes)}
@@ -60,11 +56,15 @@ for size, dataset_path in zip(sizes, folder_paths):
         for file in files:
             if ".JPEG" in file.upper() or ".JPG" in file.upper() or ".PNG" in file.upper():
                 key = root.split("/")[-1]
-                img = io.imread(f"{root}/{file}", as_gray=True)
-                arr = np.asarray(img).reshape(size * size, )  # reshape into an array
-                data.append(arr)
 
-                Y.append(encoder(key))  # simple one hot encoding
+                if "cm" in file:
+                    continue
+                else:
+                    img = io.imread(f"{root}/{file}", as_gray=True)
+                    arr = np.asarray(img).reshape(size * size, )  # reshape into an array
+                    data.append(arr)
+
+                    Y.append(encoder(key))  # simple one hot encoding
 
     y = np.array(Y)
     X = np.array(data)
