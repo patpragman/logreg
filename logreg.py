@@ -10,6 +10,7 @@ import pickle
 from cm_handler import display_and_save_cm
 from pprint import pformat
 from pathlib import Path
+HOME_DIRECTORY = Path.home()
 
 # start up wandb!
 
@@ -28,7 +29,7 @@ with open(results_filename, "w") as results_file:
     results_file.write("# Results for Logistic Regression:\n")
 
 
-folder_paths = [f"/home/patrickpragman/PycharmProjects/models/data_manufacturer/0.35_reduced_then_balanced/data_{size}" for size in sizes]
+folder_paths = [f"{HOME_DIRECTORY}/0.35_reduced_then_balanced/data_{size}" for size in sizes]
 
 for size, dataset_path in zip(sizes, folder_paths):
     wandb.log({"msg": f"Logistic Regression Model for {size} x {size} images"})
